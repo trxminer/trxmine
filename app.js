@@ -1,42 +1,12 @@
-
-
-
-
-let email = document.getElementById("email");
-let password = document.getElementById("password");
+let email = document.getElementById("email1");
+let password = document.getElementById("password1");
 let signUpBtn = document.getElementById("signup");
 
-
-
-
-
-
-
-// Signup Function
-async function signup() {
-    event.preventDefault();
-    if (!validateEmail(email.value)) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid email address.'
-        });
-        
-        return;
-    }
-
-    if (password.value.length <= 8) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Weak Password',
-            text: 'Password must be more than 8 characters.'
-        });
-        return;
-    }
-
+// Helper function to show loading and error messages
+async function showLoadingMessage(title, text) {
     const loading = Swal.fire({
-        title: 'Signing Up...',
-        text: 'Please wait while we create your account.',
+        title: title,
+        text: text,
         allowEscapeKey: false,
         allowOutsideClick: false,
         showConfirmButton: false,
@@ -44,118 +14,101 @@ async function signup() {
             Swal.showLoading();
         }
     });
+    return loading;
+}
 
+async function showError(message) {
+    await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: message
+    });
+}
+
+async function showSuccess(title, text) {
+    await Swal.fire({
+        icon: 'success',
+        title: title,
+        text: text
+    });
+}
+
+// Signup Function
+async function signup() {
+    if (!email.value ||!password.value) {
+        await showError('Please fill in both email and password fields.');
+        return;
+    }
+
+    if (!validateEmail(email.value)) {
+        await showError('Invalid Email');
+        return;
+    }
+
+    if (password.value.length <= 8) {
+        await showError('Weak Password');
+        return;
+    }
+
+    const loading = await showLoadingMessage('Signing Up...', 'Please wait while we create your account.');
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
         loading.close();
-        await Swal.fire({
-            icon: 'success',
-            title: 'Signup Successful',
-            text: `User signed up: ${userCredential.user.email}`
-        });
+        await showSuccess('Signup Successful', `User signed up: ${userCredential.user.email}`);
         return userCredential.user;
     } catch (error) {
         loading.close();
-        await Swal.fire({
-            icon: 'error',
-            title: 'Signup Error',
-            text: error.message
-        });
+        await showError(error.message);
     }
 }
 
 // Login Function
 async function login() {
-    if (!validateEmail(email.value)) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid email address.'
-        });
+    if (!email.value ||!password.value) {
+        await showError('Please fill in both email and password fields.');
         return;
     }
 
-    const loading = Swal.fire({
-        title: 'Logging In...',
-        text: 'Please wait while we log you in.',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+    if (!validateEmail(email.value)) {
+        await showError('Invalid Email');
+        return;
+    }
 
+    const loading = await showLoadingMessage('Logging In...', 'Please wait while we log you in.');
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
         loading.close();
-        await Swal.fire({
-            icon: 'success',
-            title: 'Login Successful',
-            text: `User logged in: ${userCredential.user.email}`
-        });
+        await showSuccess('Login Successful', `User logged in: ${userCredential.user.email}`);
         return userCredential.user;
     } catch (error) {
         loading.close();
-        await Swal.fire({
-            icon: 'error',
-            title: 'Login Error',
-            text: error.message
-        });
+        await showError(error.message);
     }
 }
 
 // Create User Data Function
- async function createUserData(userId, data) {
-    const loading = Swal.fire({
-        title: 'Creating User Data...',
-        text: 'Please wait while we save your data.',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-
+async function createUserData(userId, data) {
+    const loading = await showLoadingMessage('Creating User Data...', 'Please wait while we save your data.');
     try {
         const usersCollection = collection(db, "users");
         const docRef = await addDoc(usersCollection, {
             userId: userId,
-            ...data,
+           ...data,
             createdAt: new Date().toISOString()
         });
         
         loading.close();
-        await Swal.fire({
-            icon: 'success',
-            title: 'User Data Created',
-            text: `User data created with ID: ${docRef.id}`
-        });
+        await showSuccess('User Data Created', `User data created with ID: ${docRef.id}`);
         return docRef.id;
     } catch (error) {
         loading.close();
-        await Swal.fire({
-            icon: 'error',
-            title: 'Error Creating User Data',
-            text: error.message
-        });
+        await showError(error.message);
     }
 }
 
 // Read User Data Function
- async function readUserData() {
-    const loading = Swal.fire({
-        title: 'Reading User Data...',
-        text: 'Please wait while we fetch your data.',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-
+async function readUserData() {
+    const loading = await showLoadingMessage('Reading User Data...', 'Please wait while we fetch your data.');
     try {
         const usersCollection = collection(db, "users");
         const querySnapshot = await getDocs(usersCollection);
@@ -164,33 +117,26 @@ async function login() {
         querySnapshot.forEach((doc) => {
             users.push({ 
                 id: doc.id, 
-                ...doc.data() 
+               ...doc.data() 
             });
             console.log(`${doc.id} =>`, doc.data());
         });
 
         loading.close();
-        await Swal.fire({
-            icon: 'info',
-            title: 'Data Fetched Successfully!',
-            text: `Retrieved ${users.length} user records.`
-        });
-
+        await showSuccess('Data Fetched Successfully!', `Retrieved ${users.length} user records.`);
         return users;
     } catch (error) {
         loading.close();
-        await Swal.fire({
-            icon: 'error',
-            title: 'Error Reading User Data',
-            text: error.message
-        });
+        await showError(error.message);
         return [];
     }
 }
 
 // Counter Function
 let counterValue = 10000;
- function incrementCounter() {
+let counterInterval;
+
+function incrementCounter() {
     const counterElement = document.getElementById("counter");
     
     if (!counterElement) {
@@ -198,10 +144,14 @@ let counterValue = 10000;
         return;
     }
     
-    setInterval(() => {
+    counterInterval = setInterval(() => {
         counterValue += 1.5;
         counterElement.innerText = counterValue.toFixed(2);
     }, 1000);
+}
+
+function stopCounter() {
+    clearInterval(counterInterval);
 }
 
 // Email Validation Helper
@@ -221,11 +171,12 @@ window.login = login;
 window.createUserData = createUserData;
 window.readUserData = readUserData;
 window.incrementCounter = incrementCounter;
+window.stopCounter = stopCounter;
 
 /*
 Example usage:
-await signup('user@example.com', 'password123');
-await login('user@example.com', 'password123');
+await signup();
+await login();
 await createUserData('userId123', { name: 'John Doe', email: 'user@example.com' });
 const users = await readUserData();
 */
