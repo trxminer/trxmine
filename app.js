@@ -1,12 +1,5 @@
-
-// Ensure DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-
-   
-    let email = document.getElementById("email1");
-    let password = document.getElementById("password1");
     let signUpBtn = document.getElementById("signup");
-    
 
     // Helper function to show loading and error messages
     async function showLoadingMessage(title, text) {
@@ -39,30 +32,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Helper function to validate inputs
+    function validateInputs(email, password) {
+        if (!email || !password) {
+            console.error("Email or password input element not found.");
+            return false;
+        }
+        if (!email.value || !password.value) {
+            showError('Please fill in both email and password fields.');
+            return false;
+        }
+        if (!validateEmail(email.value)) {
+            showError('Invalid Email');
+            return false;
+        }
+        if (password.value.length < 8) { // Changed to < 8
+            showError('Weak Password');
+            return false;
+        }
+        return true;
+    }
+
     // Signup Function
     async function signup() {
-        if (!email ||!password) {
-            console.error("Email or password input element not found.");
-            return;
-        }
+        const email = document.getElementById("email1");
+        const password = document.getElementById("password1");
 
-        if (!email.value ||!password.value) {
-            await showError('Please fill in both email and password fields.');
-            return;
-        }
-
-        if (!validateEmail(email.value)) {
-            await showError('Invalid Email');
-            return;
-        }
-
-        if (password.value.length <= 8) {
-            await showError('Weak Password');
-            return;
-        }
+        if (!validateInputs(email, password)) return;
 
         const loading = await showLoadingMessage('Signing Up...', 'Please wait while we create your account.');
         try {
+            console.log("log::"+auth+" "+email.value," "+password.value);
             const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
             loading.close();
             await showSuccess('Signup Successful', `User signed up: ${userCredential.user.email}`);
@@ -75,20 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Login Function
     async function login() {
-        if (!email ||!password) {
-            console.error("Email or password input element not found.");
-            return;
-        }
+        const email = document.getElementById("email1");
+        const password = document.getElementById("password1");
 
-        if (!email.value ||!password.value) {
-            await showError('Please fill in both email and password fields.');
-            return;
-        }
-
-        if (!validateEmail(email.value)) {
-            await showError('Invalid Email');
-            return;
-        }
+        if (!validateInputs(email, password)) return;
 
         const loading = await showLoadingMessage('Logging In...', 'Please wait while we log you in.');
         try {
@@ -109,10 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const usersCollection = collection(db, "users");
             const docRef = await addDoc(usersCollection, {
                 userId: userId,
-               ...data,
+                ...data,
                 createdAt: new Date().toISOString()
             });
-            
+
             loading.close();
             await showSuccess('User Data Created', `User data created with ID: ${docRef.id}`);
             return docRef.id;
@@ -129,11 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const usersCollection = collection(db, "users");
             const querySnapshot = await getDocs(usersCollection);
             const users = [];
-            
+
             querySnapshot.forEach((doc) => {
-                users.push({ 
-                    id: doc.id, 
-                   ...doc.data() 
+                users.push({
+                    id: doc.id,
+                    ...doc.data()
                 });
                 console.log(`${doc.id} =>`, doc.data());
             });
@@ -148,18 +138,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Counter Function
+    /***
     let counterValue = 10000;
     let counterInterval;
 
     function incrementCounter() {
         const counterElement = document.getElementById("counter");
-        
+
         if (!counterElement) {
             console.error("Counter element not found!");
             return;
         }
-        
+
         counterInterval = setInterval(() => {
             counterValue += 1.5;
             counterElement.innerText = counterValue.toFixed(2);
@@ -176,8 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return re.test(String(email).toLowerCase());
     }
 
-    // Initialize counter when the page loads
-    incrementCounter();
+  
 
     // Example usage in the browser console:
     window.signup = signup;
@@ -187,11 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.incrementCounter = incrementCounter;
     window.stopCounter = stopCounter;
 
-    /*
-    Example usage:
-    await signup();
-    await login();
-    await createUserData('userId123', { name: 'John Doe', email: 'user@example.com' });
-    const users = await readUserData();
-    */
+    **/
+ 
 });
