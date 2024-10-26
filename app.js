@@ -1,7 +1,28 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let signUpBtn = document.getElementById("signup");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Helper function to show loading and error messages
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCP4AqGRzxzVSMIrXfXys53WQvcrh5jnl0",
+        authDomain: "tronxminer-fb28a.firebaseapp.com",
+        projectId: "tronxminer-fb28a",
+        storageBucket: "tronxminer-fb28a.appspot.com",
+        messagingSenderId: "269079823252",
+        appId: "1:269079823252:web:41250e20620d7531e80581",
+        measurementId: "G-7TWMH9L4QM"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const analytics = getAnalytics(app);
+
+      
     async function showLoadingMessage(title, text) {
         const loading = Swal.fire({
             title: title,
@@ -55,14 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Signup Function
     async function signup() {
-        const email = document.getElementById("email1");
-        const password = document.getElementById("password1");
+        const email = document.querySelector("#email1");
+        const password = document.querySelector("#password1");
+        console.log("sign up process 1"+auth.value+" "+email.value+" "+password.value);
 
         if (!validateInputs(email, password)) return;
 
         const loading = await showLoadingMessage('Signing Up...', 'Please wait while we create your account.');
+        console.log("sign up process 2");
         try {
-            console.log("log::"+auth+" "+email.value," "+password.value);
+            console.log("sign up process 3");
+            console.log("log 3.5"+" "+email.value+" "+password.value);
+            console.log("sign up process 4");
             const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
             loading.close();
             await showSuccess('Signup Successful', `User signed up: ${userCredential.user.email}`);
@@ -138,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /***
+    // Counter Function
     let counterValue = 10000;
     let counterInterval;
 
@@ -166,7 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return re.test(String(email).toLowerCase());
     }
 
-  
+    // Initialize counter when the page loads
+    incrementCounter();
 
     // Example usage in the browser console:
     window.signup = signup;
@@ -176,6 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.incrementCounter = incrementCounter;
     window.stopCounter = stopCounter;
 
-    **/
- 
+    /*
+    Example usage:
+    await signup();
+    await login();
+    await createUserData('userId123', { name: 'John Doe', email: 'user@example.com' });
+    const users = await readUserData();
+    */
 });
