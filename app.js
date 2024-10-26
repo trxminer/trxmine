@@ -1,47 +1,31 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-    getAuth, 
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
-    getFirestore,
-    collection,
-    addDoc,
-    getDocs 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCP4AqGRzxzVSMIrXfXys53WQvcrh5jnl0",
-    authDomain: "tronxminer-fb28a.firebaseapp.com",
-    projectId: "tronxminer-fb28a",
-    storageBucket: "tronxminer-fb28a.appspot.com",
-    messagingSenderId: "269079823252",
-    appId: "1:269079823252:web:41250e20620d7531e80581",
-    measurementId: "G-7TWMH9L4QM"
-};
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+
+
 let email = document.getElementById("email");
 let password = document.getElementById("password");
+let signUpBtn = document.getElementById("signup");
+
+
+
+
+
+
 
 // Signup Function
-export async function signup() {
-    if (!validateEmail(email)) {
+async function signup() {
+    event.preventDefault();
+    if (!validateEmail(email.value)) {
         await Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid email address.'
         });
+        
         return;
     }
 
-    if (password.length <= 8) {
+    if (password.value.length <= 8) {
         await Swal.fire({
             icon: 'error',
             title: 'Weak Password',
@@ -62,7 +46,7 @@ export async function signup() {
     });
 
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
         loading.close();
         await Swal.fire({
             icon: 'success',
@@ -81,8 +65,8 @@ export async function signup() {
 }
 
 // Login Function
-export async function login(email, password) {
-    if (!validateEmail(email)) {
+async function login() {
+    if (!validateEmail(email.value)) {
         await Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
@@ -103,7 +87,7 @@ export async function login(email, password) {
     });
 
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
         loading.close();
         await Swal.fire({
             icon: 'success',
@@ -122,7 +106,7 @@ export async function login(email, password) {
 }
 
 // Create User Data Function
-export async function createUserData(userId, data) {
+ async function createUserData(userId, data) {
     const loading = Swal.fire({
         title: 'Creating User Data...',
         text: 'Please wait while we save your data.',
@@ -160,7 +144,7 @@ export async function createUserData(userId, data) {
 }
 
 // Read User Data Function
-export async function readUserData() {
+ async function readUserData() {
     const loading = Swal.fire({
         title: 'Reading User Data...',
         text: 'Please wait while we fetch your data.',
@@ -206,7 +190,7 @@ export async function readUserData() {
 
 // Counter Function
 let counterValue = 10000;
-export function incrementCounter() {
+ function incrementCounter() {
     const counterElement = document.getElementById("counter");
     
     if (!counterElement) {
