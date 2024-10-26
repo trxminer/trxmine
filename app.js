@@ -1,8 +1,12 @@
+
 // Ensure DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+
+   
     let email = document.getElementById("email1");
     let password = document.getElementById("password1");
     let signUpBtn = document.getElementById("signup");
+    
 
     // Helper function to show loading and error messages
     async function showLoadingMessage(title, text) {
