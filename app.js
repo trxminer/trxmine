@@ -1,28 +1,56 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+// Initialize Firebase first with type="module" in script tag
+const initFirebase = async () => {
+    try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js");
+        const { getAuth } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js");
+        const { getFirestore } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js");
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCP4AqGRzxzVSMIrXfXys53WQvcrh5jnl0",
+            authDomain: "tronxminer-fb28a.firebaseapp.com",
+            projectId: "tronxminer-fb28a",
+            storageBucket: "tronxminer-fb28a.appspot.com",
+            messagingSenderId: "269079823252",
+            appId: "1:269079823252:web:41250e20620d7531e80581",
+            measurementId: "G-7TWMH9L4QM"
+        };
 
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        console.log("Firebase initialized:", app);
 
-document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Authentication
+        const auth = getAuth(app);
+        console.log("Auth initialized:", auth);
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCP4AqGRzxzVSMIrXfXys53WQvcrh5jnl0",
-        authDomain: "tronxminer-fb28a.firebaseapp.com",
-        projectId: "tronxminer-fb28a",
-        storageBucket: "tronxminer-fb28a.appspot.com",
-        messagingSenderId: "269079823252",
-        appId: "1:269079823252:web:41250e20620d7531e80581",
-        measurementId: "G-7TWMH9L4QM"
-      };
+        // Initialize Firestore
+        const db = getFirestore(app);
+        console.log("Firestore initialized:", db);
+
+        return { app, auth, db };
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+        throw error;
+    }
+};
+
+// Wait for DOM content to be loaded
+document.addEventListener('DOMContentLoaded', async () => {
+    let auth, db;
     
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-      const analytics = getAnalytics(app);
+    try {
+        // Initialize Firebase and get auth instance
+        const firebase = await initFirebase();
+        auth = firebase.auth;
+        db = firebase.db;
+        
+        console.log("Firebase setup complete. Auth available:", !!auth);
+    } catch (error) {
+        console.error("Setup error:", error);
+        await showError("Failed to initialize Firebase. Please check console for details.");
+        return;
+    }
 
-      
     async function showLoadingMessage(title, text) {
         const loading = Swal.fire({
             title: title,
@@ -53,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Helper function to validate inputs
     function validateInputs(email, password) {
         if (!email || !password) {
             console.error("Email or password input element not found.");
@@ -67,146 +94,90 @@ document.addEventListener('DOMContentLoaded', () => {
             showError('Invalid Email');
             return false;
         }
-        if (password.value.length < 8) { // Changed to < 8
+        if (password.value.length < 8) {
             showError('Weak Password');
             return false;
         }
         return true;
     }
 
-    // Signup Function
-    async function signup() {
+    async function signup(event) {
+        if (event) event.preventDefault();
+        
+        if (!auth) {
+            console.error("Auth is not initialized");
+            await showError("Authentication service is not available");
+            return;
+        }
+
         const email = document.querySelector("#email1");
         const password = document.querySelector("#password1");
-        console.log("sign up process 1"+auth.value+" "+email.value+" "+password.value);
 
         if (!validateInputs(email, password)) return;
 
         const loading = await showLoadingMessage('Signing Up...', 'Please wait while we create your account.');
-        console.log("sign up process 2");
+        
         try {
-            console.log("sign up process 3");
-            console.log("log 3.5"+" "+email.value+" "+password.value);
-            console.log("sign up process 4");
+            const { createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js");
             const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
-            loading.close();
+            await loading.close();
             await showSuccess('Signup Successful', `User signed up: ${userCredential.user.email}`);
             return userCredential.user;
         } catch (error) {
-            loading.close();
+            console.error("Signup error:", error);
+            await loading.close();
             await showError(error.message);
         }
     }
 
-    // Login Function
-    async function login() {
+    async function login(event) {
+        if (event) event.preventDefault();
+
+        if (!auth) {
+            console.error("Auth is not initialized");
+            await showError("Authentication service is not available");
+            return;
+        }
+
         const email = document.getElementById("email1");
         const password = document.getElementById("password1");
 
         if (!validateInputs(email, password)) return;
 
         const loading = await showLoadingMessage('Logging In...', 'Please wait while we log you in.');
+        
         try {
+            const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js");
             const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-            loading.close();
+            await loading.close();
             await showSuccess('Login Successful', `User logged in: ${userCredential.user.email}`);
             return userCredential.user;
         } catch (error) {
-            loading.close();
+            console.error("Login error:", error);
+            await loading.close();
             await showError(error.message);
         }
     }
 
-    // Create User Data Function
-    async function createUserData(userId, data) {
-        const loading = await showLoadingMessage('Creating User Data...', 'Please wait while we save your data.');
-        try {
-            const usersCollection = collection(db, "users");
-            const docRef = await addDoc(usersCollection, {
-                userId: userId,
-                ...data,
-                createdAt: new Date().toISOString()
-            });
-
-            loading.close();
-            await showSuccess('User Data Created', `User data created with ID: ${docRef.id}`);
-            return docRef.id;
-        } catch (error) {
-            loading.close();
-            await showError(error.message);
-        }
-    }
-
-    // Read User Data Function
-    async function readUserData() {
-        const loading = await showLoadingMessage('Reading User Data...', 'Please wait while we fetch your data.');
-        try {
-            const usersCollection = collection(db, "users");
-            const querySnapshot = await getDocs(usersCollection);
-            const users = [];
-
-            querySnapshot.forEach((doc) => {
-                users.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-                console.log(`${doc.id} =>`, doc.data());
-            });
-
-            loading.close();
-            await showSuccess('Data Fetched Successfully!', `Retrieved ${users.length} user records.`);
-            return users;
-        } catch (error) {
-            loading.close();
-            await showError(error.message);
-            return [];
-        }
-    }
-
-    // Counter Function
-    let counterValue = 10000;
-    let counterInterval;
-
-    function incrementCounter() {
-        const counterElement = document.getElementById("counter");
-
-        if (!counterElement) {
-            console.error("Counter element not found!");
-            return;
-        }
-
-        counterInterval = setInterval(() => {
-            counterValue += 1.5;
-            counterElement.innerText = counterValue.toFixed(2);
-        }, 1000);
-    }
-
-    function stopCounter() {
-        clearInterval(counterInterval);
-    }
-
-    // Email Validation Helper
+    // Email validation helper
     function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
     }
 
-    // Initialize counter when the page loads
-    incrementCounter();
-
-    // Example usage in the browser console:
+    // Expose functions to window object
     window.signup = signup;
     window.login = login;
-    window.createUserData = createUserData;
-    window.readUserData = readUserData;
-    window.incrementCounter = incrementCounter;
-    window.stopCounter = stopCounter;
 
-    /*
-    Example usage:
-    await signup();
-    await login();
-    await createUserData('userId123', { name: 'John Doe', email: 'user@example.com' });
-    const users = await readUserData();
-    */
+    // Add event listeners to forms if they exist
+    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form');
+
+    if (signupForm) {
+        signupForm.addEventListener('submit', signup);
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', login);
+    }
 });
