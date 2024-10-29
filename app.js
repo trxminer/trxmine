@@ -1,121 +1,175 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const client = new Appwrite.Client();
-    client.setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
-          .setProject('671f8d37001025732495'); // Your project ID
 
-    const account = new Appwrite.Account(client);
-    const databases = new Appwrite.Databases(client);
-
-    function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
-    }
-
-    function validatePassword(password) {
-        return password.length >= 6; // Example: At least 6 characters long
-    }
+   
+  // Function to handle signup
+  function signup(username, address, email, password) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Please wait while we Sign you Up.',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading(); // Show the loading spinner
+        }
+      });
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+  
+        // Save additional user data to Firestore
+        return db.collection('users').doc(user.uid).set({
+          username: username,
+          address: address,
+          email: email
+        });
+      })
+      .then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Signup successful',
+        });
+        localStorage.setItem('currentUsername', username);
+        window.location.href = 'dashboard.html';
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMessage,
+        });
+      });
+  }
+  
+  // Function to handle login
+  function login(email, password) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Please wait while we Log you In',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading(); // Show the loading spinner
+        }
+      });
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: `Welcome, ${user.email}!`,
+        });
+        localStorage.setItem('currentUsername', user.email);
+        window.location.href = 'dashboard.html';
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMessage,
+        });
+      });
+  }
+  
+  // Function to read user data from Firestore
+  function readUserData() {
+    const user = firebase.auth().currentUser;
     
-    function goToURL(url) {
-        window.location.href = url;
-    }
-    
-
-    async function signup() {
-        const email = document.getElementById("email1").value;
-        const username = document.getElementById("name1").value;
-        const address = document.getElementById("address1").value;
-        const password = document.getElementById("password1").value;
-
-        if (!validateEmail(email)) {
-            Swal.fire('Error', 'Invalid email format', 'error');
-            return;
-        }
-        if (!validatePassword(password)) {
-            Swal.fire('Error', 'Password must be at least 6 characters long', 'error');
-            return;
-        }
-
-        try {
+    if (user) {
+      db.collection('users').doc(user.uid).get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            console.log("User Data:", data);
+            // You can now use this data in your app
             Swal.fire({
-                title: 'Signing up...',
-                text: 'Please wait a moment',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+              icon: 'info',
+              title: 'User Data',
+              text: `Username: ${data.username}, Address: ${data.address}`,
             });
-            console.log("logging info "+Appwrite.ID.unique(), email, password, username);
-            const user = await account.create(Appwrite.ID.unique(), email, password, username);
-            await saveUserToDB(user.$id, username, address);
-            Swal.fire('Success', 'User signed up successfully!', 'success');
-            goToURL(dashboard.html);
-
-        } catch (error) {
-            Swal.fire('Error', 'Signup failed: ' + error.message, 'error' +error.code);
-        }
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting document:", error);
+        });
+    } else {
+      console.log("No user is signed in.");
     }
-
-
-
-    async function saveUserToDB(accountId, username, address) {
-        const userData = {
-            accountId,
-            username,
-            address,
-            balance: 0 // Default balance
-        };
-
-        try {
-            const response = await databases.createDocument(
-                '671f97e50018d900dde8', // Replace with your database ID
-                '671f987e000d1d707807', // Replace with your collection ID
-                Appwrite.ID.unique(),
-                userData
-            );
-            console.log('User saved to DB:', response);
-        } catch (error) {
-            console.error('Failed to save user to DB:', error);
-        }
+  }
+  
+  // Function to handle form submission for signup
+  document.getElementById('signup').addEventListener('click', () => {
+    const username = document.getElementById('name1').value.trim();
+    const address = document.getElementById('address1').value.trim();
+    const email = document.getElementById('email1').value.trim();
+    const password = document.getElementById('password1').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword1').value.trim();
+  
+    // Validate input fields
+    if (!username || !address || !email || !password || !confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please fill all fields',
+      });
+      return;
     }
-
-    async function login() {
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
-
-        try {
-            Swal.fire({
-                title: 'Logging in...',
-                text: 'Please wait a moment',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            const session = await account.createEmailPasswordSession(email, password);
-            Swal.fire('Success', 'User logged in successfully!', 'success');
-            await getUserData(); // Fetch user data after login
-        } catch (error) {
-            Swal.fire('Error', 'Login failed: ' + error.message, 'error');
-        }
+  
+    if (password.length < 8) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Password must be at least 8 characters long',
+      });
+      return;
     }
-
-    async function getUserData() {
-        try {
-            const user = await account.get(); // Get current user info
-            const userData = await databases.getDocument(
-                '671f97e50018d900dde8', // Replace with your database ID
-                '671f987e000d1d707807', // Replace with your collection ID
-                user.$id // Use the user's account ID to fetch their data
-            );
-
-            console.log('Username:', userData.username);
-            console.log('Address:', userData.address);
-        } catch (error) {
-            console.error('Failed to retrieve user data:', error);
-        }
+  
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Passwords do not match',
+      });
+      return;
     }
-
-    document.getElementById('signup').addEventListener('click', signup);
-    document.getElementById('login').addEventListener('click', login);
-});
+  
+    signup(username, address, email, password);
+  });
+  
+  // Function to handle form submission for login
+  /**document.getElementById('signup').addEventListener('click', () => {
+    const email = document.getElementById('email2').value.trim();
+    const password = document.getElementById('password2').value.trim();
+  
+    // Validate input fields
+    if (!email || !password) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please fill all fields',
+      });
+      return;
+    }
+  
+    login(email, password);
+  });
+  */
+  //Listen for authentication state changes
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      // User is signed in
+      //readUserData(); // Optionally read user data on sign-in
+      console.log("=logged In");
+    } else {
+      // User is signed out
+      console.log("User is signed out.");
+    }
+  });

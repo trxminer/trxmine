@@ -26,13 +26,26 @@
         <link rel="stylesheet" href="index.css">
     <!-- Include SweetAlert CSS and JS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-
-            
-        <script src="https://cdn.jsdelivr.net/npm/appwrite@16.0.2"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCiMCm1OfKguEexfaOF5jy5XJAQ8w_Jqag",
+    authDomain: "tronxminerfarm.firebaseapp.com",
+    projectId: "tronxminerfarm",
+    storageBucket: "tronxminerfarm.appspot.com",
+    messagingSenderId: "480890240487",
+    appId: "1:480890240487:web:a7b4712586b25e0f6b1142",
+    measurementId: "G-Z6X3JHQ5MN"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore(); // Initialize Firestore
+</script>
         <script type="module" src="app.js"></script>
        
-          
+      
           
 </head>
 
@@ -196,6 +209,7 @@
     <input type="text" id="address1" class="input" placeholder="Your Trx address">
 <input type="text" id="email1" class="input" placeholder="email">
 <input type="password" id="password1" class="input" placeholder="password">
+<input type="password" id="confirmPassword1" class="input" placeholder="confirm password">
     
 <button 
   class="cs_btn cs_style_1" 
