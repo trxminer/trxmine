@@ -14,6 +14,15 @@ function getPlan(){
 
 }
 
+function paid(){
+    Swal.fire({
+        icon: 'loading',
+        title: 'Payment cofirmation',
+        text: 'please hang on while we confirm your payment.',
+      });
+      sendEmail()
+}
+
 function sendEmail() {
     const user = firebase.auth().currentUser;
     const price = urlParams.get('price');
@@ -41,3 +50,5 @@ function sendEmail() {
         console.error("Error sending email:", error); // Log error details in console
     });
 }
+
+getPlan();
