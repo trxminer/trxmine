@@ -23,6 +23,30 @@
     <link rel="stylesheet" href="https://shibfarm.live/assets/themes/renft/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="index.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+        <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCiMCm1OfKguEexfaOF5jy5XJAQ8w_Jqag",
+            authDomain: "tronxminerfarm.firebaseapp.com",
+            projectId: "tronxminerfarm",
+            storageBucket: "tronxminerfarm.appspot.com",
+            messagingSenderId: "480890240487",
+            appId: "1:480890240487:web:a7b4712586b25e0f6b1142",
+            measurementId: "G-Z6X3JHQ5MN"
+          };
+          firebase.initializeApp(firebaseConfig);
+          const auth = firebase.auth();
+          const db = firebase.firestore(); // Initialize Firestore
+        </script>
+                <script type="module" src="dashboard.js"></script>
+               
+              
+
 </head>
 
 <style type="text/css">
@@ -141,7 +165,7 @@
 <li><a href="payments.html"><i class="fa fa-coins"> </i> Withdrawals</a></li>
 <li><a href="faq.html"><i class="fa fa-coins"> </i> Faq</a></li>
 <li><a href="payouts.html"><i class="fa fa-coins"> </i> Payout</a></li>
-<li><a href="signup.html"><i class="fa fa-coins"> </i> logout</a></li>
+<li><a href="purchase.html"><i class="fa fa-coins"> </i> logout</a></li>
 
 
 </ul>
@@ -183,8 +207,8 @@
                     <div class="cs_iconbox_header">
                         <div style="display: flex; justify-content: center; align-items: center; ">
                             <img src="wallet.png" height="34px" width="35px" alt="Icon">
-                            <h2 style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">ACCT BALANCE:</h2>
-                            <h2 style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">23.004 $TRX</h2>
+                            <h2 style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">Username:</h2>
+                            <p id="username" style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">loading...</p>
                         </div>
                         
                     </div>
@@ -198,15 +222,32 @@
         <div class="cs_iconbox_header">
             <div style="display: flex; justify-content: center; align-items: center; ">
                 <img src="coins.png" height="34px" width="35px" alt="Icon">
-                <h2 style="margin: 12px; font-size: 18px;color: rgba(222, 181, 250, 0.812);">MINE TRACKER:</h2>
+                <h2 style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">Your Address:</h2>
             </div>
-            <h2 style="margin: 12px; font-size: 18px;color: rgba(222, 181, 250, 0.812);">23.004 $TRX</h2>
+            <p id="address" style="margin: 12px; font-size: 10;color: rgba(222, 181, 250, 0.812);">loading...</p>
         </div>
         
     </div>
 </div>
 
 <br/>
+
+<div class="cs_iconbox cs_style_1 cs_radius_20 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
+    <div class="cs_iconbox_inner">
+        <div class="cs_iconbox_header">
+            <div style="display: flex; justify-content: center; align-items: center; ">
+                <img src="wallet.png" height="34px" width="35px" alt="Icon">
+                <h2 style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">Balance:</h2>
+                <p id="balance" style="margin: 12px; font-size: large;color: rgba(222, 181, 250, 0.812);">loading...</p>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+<br/>
+
 <br/>
 
 <center><h3>Active Plans</h3></center>
@@ -247,51 +288,9 @@
         
     </div>
 </div>
-
-<br/>
-
-
-<div class="cs_iconbox cs_style_1 cs_radius_20 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
-    <div class="cs_iconbox_inner">
-        <div class="cs_iconbox_header">
-            <div style="display: flex; justify-content: center; align-items: center; ">
-                <img src="package.png" height="30px" width="30px" alt="Icon">
-                <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">PLAN NAME:</P>
-            </div>
-            <P style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">FREE PLAN</P>
-        </div>
-
-        <div class="cs_iconbox_header">
-            <div style="display: flex; justify-content: center; align-items: center; ">
-                <img src="energy.png" height="30px" width="30px" alt="Icon">
-                <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">POWER:</P>
-            </div>
-            <P style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">10.003/M</P>
-        </div>
-
-
-        <div class="cs_iconbox_header">
-            <div style="display: flex; justify-content: center; align-items: center; ">
-                <img src="coin.png" height="30px" width="30px" alt="Icon">
-                <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">EARNING RATE:</P>
-            </div>
-            <P style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">20.0/GHS</P>
-        </div>
-
-        <div class="cs_iconbox_header">
-            <div style="display: flex; justify-content: center; align-items: center; ">
-                <img src="signal.png" height="30px" width="30px" alt="Icon">
-                <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">STATUS:</P>
-            </div>
-            <P style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">ACTIVE🟢</P>
-        </div>
-        
-    </div>
-</div>
-
 <br/>
 <br/>
-<br/>
+
 
 
 <center><h3>Available Plans</h3></center>
@@ -334,7 +333,7 @@
         
 
         <div style="display: flex; justify-content: center; align-items: center; height: 5vh;">
-            <a style="margin-right: 20px;" href="signup.html" class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to signup">
+            <a style="margin-right: 20px;" href="purchase.html" class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to signup">
                 <span>
                     <i class="fa fa-arrow-right-long" aria-hidden="true"></i>
                     <strong>Purchase Plan</strong>
@@ -386,7 +385,7 @@
         
 
         <div style="display: flex; justify-content: center; align-items: center; height: 5vh;">
-            <a style="margin-right: 20px;" href="signup.html" class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to signup">
+            <a style="margin-right: 20px;" href="purchase.html" class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to signup">
                 <span>
                     <i class="fa fa-arrow-right-long" aria-hidden="true"></i>
                     <strong>Purchase Plan</strong>
