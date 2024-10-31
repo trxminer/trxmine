@@ -8,6 +8,9 @@ function getPlan(){
     var powerId = document.getElementById('powerId');
     var priceId = document.getElementById('priceId');
 
+    planId.innerHTML = plan;
+    priceId.innerHTML = price;
+    powerId.innerHTML = power;
 
 }
 
