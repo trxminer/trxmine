@@ -1,11 +1,20 @@
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   // Function to read user data from Firestore
   function readUserData() {
 var username = document.getElementById("username");
 var address = document.getElementById("address");
 var balance = document.getElementById("balance");
 
-
-    const user = firebase.auth().currentUser;
+const user = firebase.auth().currentUser;
     
     if (user) {
       db.collection('users').doc(user.uid).get()
@@ -32,7 +41,28 @@ balance.innerHTML = data.balance;
   }
   
 
-
+async  function referral(){
+    const user = firebase.auth().currentUser;
+        const websiteName = window.location.hostname+user.uid; // Get the hostname (website name)
+    
+        try {
+            await navigator.clipboard.writeText(websiteName); // Copy to clipboard
+            Swal.fire({
+                icon: 'success',
+                title: 'Referral',
+                text: 'Referral has been copied',
+              });
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'error',
+                text: 'couldnt copy address, make sure you are logged in.',
+              });
+        }
+    }
+    
+    // Add event listener to the button
+    document.getElementById('referral').addEventListener('click', referral);
 
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
