@@ -43,7 +43,7 @@ balance.innerHTML = data.balance;
 
 async  function referral(){
     const user = firebase.auth().currentUser;
-        const websiteName = window.location.hostname+user.uid; // Get the hostname (website name)
+        const websiteName = window.location.hostname+"/"+user.uid; // Get the hostname (website name)
     
         try {
             await navigator.clipboard.writeText(websiteName); // Copy to clipboard
