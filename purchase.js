@@ -60,32 +60,43 @@ class PlanManager {
     }
 }
 
+function go () {
+    window.location.href = url;
+    //
+}
+
+
+
 // Payment System
 class PaymentSystem {
     constructor() {
         this.statusElement = utils.safeGetElement(CONFIG.SELECTORS.STATUS_MESSAGE);
     }
 
+
+
+
+
     async confirmPayment() {
         try {
-            await Swal.fire({
-                title: 'Processing Payment',
-                text: 'Please wait while we confirm your payment...',
-                icon: 'info',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+         
 
-            await this.sendConfirmationEmail();
+           // await this.sendConfirmationEmail();
 
+
+console.log("i got here");
             await Swal.fire({
                 title: 'Success!',
                 text: 'Payment confirmation email sent successfully',
                 icon: 'success'
             });
+
+            console.log("time out begins.");
+
+            setTimeout(function() {
+                window.location.href = "dashboard.html";
+            }, 3000);
+            
         } catch (error) {
             console.error('Payment confirmation error:', error);
             await Swal.fire({
@@ -137,6 +148,8 @@ class PaymentSystem {
         `;
     }
 }
+
+
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {

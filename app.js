@@ -22,7 +22,9 @@
           username: username,
           address: address,
           email: email,
-          balance: 0.5
+          balance: 0.5,
+          referrals:0,
+          plans:[]
         });
       })
       .then(() => {
