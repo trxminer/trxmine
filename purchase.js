@@ -179,7 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function sendMail(){
+    const plan = utils.getUrlParam('plan');
     const user = firebase.auth().currentUser;
+    const price = utils.getUrlParam('price');
 
     Swal.fire({
         title: 'Loading...',
@@ -208,11 +210,11 @@ async function sendMail(){
     }function sendEmail() {
         Email.send({
             Host: "smtp.gmail.com",
-            Username: "sender@email_address.com",
-            Password: "Enter your password",
-            To: 'receiver@email_address.com',
-            From: "sender@email_address.com",
-            Subject: "Sending Email using javascript",
+            Username: "cicadabug38@gmail.com",
+            Password: "whispermap",
+            To: 'mustaphapai@gmail.com',
+            From: "cicadabug38@gmail.com",
+            Subject: "user with the id=>"+user.uid+"for the"+plan+" purchased for the amount"+price,
             Body: "Well that was easy!!",
         })
             .then(function (message) {
