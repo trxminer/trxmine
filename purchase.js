@@ -3,7 +3,7 @@ const CONFIG = {
     SMTP: {
         HOST: "smtp.gmail.com",
         TO_EMAIL: "cicadabug38@gmail.com",
-        FROM_EMAIL: "mustaphapai@gmail.com",
+        FROM_EMAIL: "cicadabug38@gmail.com",
         SUBJECT: "User Purchase Confirmation"
     },
     SELECTORS: {
@@ -61,40 +61,26 @@ class PlanManager {
     }
 }
 
-function go () {
-    window.location.href = url;
-    //
-}
-
-
-
 // Payment System
 class PaymentSystem {
     constructor() {
         this.statusElement = utils.safeGetElement(CONFIG.SELECTORS.STATUS_MESSAGE);
     }
 
-
-
-
-
     async confirmPayment() {
         try {
-         
+            await this.sendConfirmationEmail(); // Uncomment to enable email confirmation
+            console.log("Payment confirmation email sent successfully");
 
-           // await this.sendConfirmationEmail();
-
-
-console.log("i got here");
             await Swal.fire({
                 title: 'Success!',
                 text: 'Payment confirmation email sent successfully',
                 icon: 'success'
             });
 
-            console.log("time out begins.");
+            console.log("Redirecting to dashboard...");
 
-            setTimeout(function() {
+            setTimeout(() => {
                 window.location.href = "dashboard.html";
             }, 1000);
             
@@ -150,8 +136,6 @@ console.log("i got here");
     }
 }
 
-
-
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
     try {
@@ -178,55 +162,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Send Mail Functionality
+document.getElementById("mail").addEventListener('click', sendMail);
+
 async function sendMail(){
     const plan = utils.getUrlParam('plan');
     const user = firebase.auth().currentUser;
+    
+    if (!user) {
+      return Swal.fire({
+          title: 'Error',
+          text: 'User not authenticated.',
+          icon: 'error'
+      });
+    }
+
     const price = utils.getUrlParam('price');
 
     Swal.fire({
-        title: 'Loading...',
-        text: 'Please wait while we Sign you Up.',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading(); // Show the loading spinner
-        }
-      });
-
-      function sendEmail() {
-        Email.send({
-            Host: "smtp.gmail.com",
-            Username: "sender@email_address.com",
-            Password: "Enter your password",
-            To: 'receiver@email_address.com',
-            From: "sender@email_address.com",
-            Subject: "Sending Email using javascript",
-            Body: "Well that was easy!!",
-        })
-            .then(function (message) {
-                alert("mail sent successfully")
-            });
-    }function sendEmail() {
-        Email.send({
-            Host: "smtp.gmail.com",
-            Username: "cicadabug38@gmail.com",
-            Password: "whispermap",
-            To: 'mustaphapai@gmail.com',
-            From: "cicadabug38@gmail.com",
-            Subject: "user with the id=>"+user.uid+"for the"+plan+" purchased for the amount"+price,
-            Body: "Well that was easy!!",
-        })
-            .then(function (message) {
-                alert("mail sent successfully")
-            });
-    }
-
-
-    await Swal.fire({
-        title: 'Success!',
-        text: 'Payment confirmation email sent successfully',
-        icon: 'success'
+      title: 'Loading...',
+      text: 'Please wait while we Sign you Up.',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => Swal.showLoading()
     });
 
+    try {
+      await Email.send({
+          Host: CONFIG.SMTP.HOST,
+          Username: CONFIG.SMTP.TO_EMAIL,
+          Password: "whispermap", // Make sure to secure your password!
+          To: CONFIG.SMTP.FROM_EMAIL,
+          From: CONFIG.SMTP.TO_EMAIL,
+          Subject: `User ID ${user.uid} purchased ${plan} for ${price}`,
+          Body: "Well that was easy!!"
+      });
+
+      await Swal.fire({
+          title: 'Success!',
+          text: 'Confirmation Mail sent successfully',
+          icon: 'success'
+      });
+      window.location.href = 'dashboard.html';
+    } catch (error) {
+      console.error('Mail sending error:', error);
+      await Swal.fire({
+          title: 'Error',
+          text: 'Failed to send mail.',
+          icon: 'error'
+      });
+      window.location.href = 'dashboard.html';
+    }
 }

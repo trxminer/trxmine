@@ -27,6 +27,24 @@
         <script src="purchase.js" type="module"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCiMCm1OfKguEexfaOF5jy5XJAQ8w_Jqag",
+    authDomain: "tronxminerfarm.firebaseapp.com",
+    projectId: "tronxminerfarm",
+    storageBucket: "tronxminerfarm.appspot.com",
+    messagingSenderId: "480890240487",
+    appId: "1:480890240487:web:a7b4712586b25e0f6b1142",
+    measurementId: "G-Z6X3JHQ5MN"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore(); // Initialize Firestore
+</script>
 </head>
 
 <style type="text/css">
@@ -140,7 +158,7 @@
                         <div class="cs_nav text-uppercase">
                             <ul class="cs_nav_list">
                                 
-                                   <li><a href="https://shibfarm.live/"><i class="fa fa-home"></i> Home</a></li>
+                                   <li><a href="index.html"><i class="fa fa-home"></i> Home</a></li>
 
 <li><a href="payouts.html"><i class="fa fa-coins"> </i> Payout</a></li>
 
@@ -230,7 +248,7 @@
       
 
         <div style="display: flex; justify-content: center; align-items: center; height: 5vh;">
-            <a style="margin-right: 20px;" id="paid"  class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to signup">
+            <a style="margin-right: 20px;" id="mail"  class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to signup">
                 <span>
                     <i class="fa fa-arrow-right-long" aria-hidden="true"></i>
                     <strong> I HAVE MADE PAYMENT</strong>
@@ -239,6 +257,8 @@
             
            
 </div>
+</br>
+
 
 
     </div>
