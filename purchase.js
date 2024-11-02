@@ -81,7 +81,7 @@ class PaymentSystem {
         try {
          
 
-           // await this.sendConfirmationEmail();
+            await this.sendConfirmationEmail();
 
 
 console.log("i got here");

@@ -80,7 +80,7 @@ function readPlan(data){
 var username = document.getElementById("username");
 var address = document.getElementById("address");
 var balance = document.getElementById("balance");
-var referrals = document.getElementById("referrals");
+var referrals = document.getElementById("referralID");
 
 
 const user = firebase.auth().currentUser;
@@ -96,7 +96,7 @@ const user = firebase.auth().currentUser;
 username.innerHTML = data.username;
 address.innerHTML = data.address;
 balance.innerHTML = data.balance;
-referrals.innerHTML = data.referrals;
+referrals.innerText = data.referrals;
 readPlan(data.plan);
           } else {
             console.log("No such document!");
@@ -114,7 +114,7 @@ readPlan(data.plan);
 async  function referral(){
     const user = firebase.auth().currentUser;
          // Get the hostname (website name)
-         const websiteName = "Sign Up on www.tronxminerfarms.online and use my referral code "+user.uid+" and earn 5.05$TRX";
+         const websiteName = "Sign Up on www.tronxminerfarms.online and use my referral code ==>"+user.uid+" and earn 1 FREE plan.";
         try {
             await navigator.clipboard.writeText(websiteName); // Copy to clipboard
             Swal.fire({

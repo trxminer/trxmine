@@ -1,14 +1,15 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
-import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCiMCm1OfKguEexfaOF5jy5XJAQ8w_Jqag",
+    authDomain: "tronxminerfarm.firebaseapp.com",
+    projectId: "tronxminerfarm",
+    storageBucket: "tronxminerfarm.appspot.com",
+    messagingSenderId: "480890240487",
+    appId: "1:480890240487:web:a7b4712586b25e0f6b1142",
+    measurementId: "G-Z6X3JHQ5MN"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -57,11 +58,12 @@ submitButton.addEventListener('click', async function() {
     if (userDoc.exists()) {
       // Get the current referrals count
       const currentReferrals = userDoc.data().referrals;
-
+   
       // Update the referrals count
       await updateDoc(userRef, {
         referrals: currentReferrals + 1,
       });
+      
 
       // Hide loading dialog and show success message
       Swal.close();
