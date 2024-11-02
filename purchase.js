@@ -10,6 +10,7 @@ const CONFIG = {
         PLAN_ID: 'planId',
         POWER_ID: 'powerId',
         PRICE_ID: 'priceId',
+        
         PAID_BUTTON: 'paid',
         STATUS_MESSAGE: 'statusMessage'
     }
@@ -81,7 +82,7 @@ class PaymentSystem {
         try {
          
 
-            await this.sendConfirmationEmail();
+           // await this.sendConfirmationEmail();
 
 
 console.log("i got here");
@@ -176,3 +177,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+async function sendMail(){
+    const user = firebase.auth().currentUser;
+
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Please wait while we Sign you Up.',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading(); // Show the loading spinner
+        }
+      });
+
+      function sendEmail() {
+        Email.send({
+            Host: "smtp.gmail.com",
+            Username: "sender@email_address.com",
+            Password: "Enter your password",
+            To: 'receiver@email_address.com',
+            From: "sender@email_address.com",
+            Subject: "Sending Email using javascript",
+            Body: "Well that was easy!!",
+        })
+            .then(function (message) {
+                alert("mail sent successfully")
+            });
+    }function sendEmail() {
+        Email.send({
+            Host: "smtp.gmail.com",
+            Username: "sender@email_address.com",
+            Password: "Enter your password",
+            To: 'receiver@email_address.com',
+            From: "sender@email_address.com",
+            Subject: "Sending Email using javascript",
+            Body: "Well that was easy!!",
+        })
+            .then(function (message) {
+                alert("mail sent successfully")
+            });
+    }
+
+
+    await Swal.fire({
+        title: 'Success!',
+        text: 'Payment confirmation email sent successfully',
+        icon: 'success'
+    });
+
+}
