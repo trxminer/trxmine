@@ -23,6 +23,32 @@
     <link rel="stylesheet" href="https://shibfarm.live/assets/themes/renft/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="index.css">
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="index.css">
+    <!-- Include SweetAlert CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCiMCm1OfKguEexfaOF5jy5XJAQ8w_Jqag",
+    authDomain: "tronxminerfarm.firebaseapp.com",
+    projectId: "tronxminerfarm",
+    storageBucket: "tronxminerfarm.appspot.com",
+    messagingSenderId: "480890240487",
+    appId: "1:480890240487:web:a7b4712586b25e0f6b1142",
+    measurementId: "G-Z6X3JHQ5MN"
+  };
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = getFirestore(app); // Initialize Firestore
+</script>
+        <script type="module" src="update.js"></script>
+       
+
 </head>
 
 <style type="text/css">
@@ -136,7 +162,7 @@
                         <div class="cs_nav text-uppercase">
                             <ul class="cs_nav_list">
                                 
-                                   <li><a href="https://shibfarm.live/"><i class="fa fa-home"></i> Home</a></li>
+                                   <li><a href="index.html"><i class="fa fa-home"></i> Home</a></li>
 
 <li><a href="payouts.html"><i class="fa fa-coins"> </i> Payout</a></li>
 <li><a href="faq.html"><i class="fa fa-info-circle"> </i> About</a></li>
@@ -178,13 +204,22 @@
                 <h2 class="cs_section_title mb-0 margin2">Update Profile</h2>
                 <br/>
 <div class="inputDiv">
-<input type="text" id="referral" class="input" placeholder="your referral code">
+    <p id="id"></p>
+<input type="text" id="referralInput" class="input" placeholder="your referral code">
 
     
-<a style="margin-right: 20px;" href="dashboard.html" class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to Google">
+<a style="margin-right: 20px;" id="submit"  class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to Google">
     <span>
         <i class="fa fa-arrow-right-long" aria-hidden="true"></i>
         <strong>Claim free $trx</strong>
+    </span>
+</a>
+
+</br>
+<a style="margin-right: 20px;" id="skip"  class="cs_btn cs_style_1" id="go_enter" aria-label="Continue to Google">
+    <span>
+        <i class="fa fa-arrow-right-long" aria-hidden="true"></i>
+        <strong>Skip referrals</strong>
     </span>
 </a>
 
