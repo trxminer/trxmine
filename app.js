@@ -18,18 +18,36 @@
         const user = userCredential.user;
   
 
-        const userMap = {
+        const userMap = 
+         [{ price:"500.04$TRX",
+            plan:"GOLD PLAN",
+            power:"300",
+            earning:"0.30",
+            
+          },
+          { price:"250.02$TRX",
+            plan:"SILVER PLAN",
+            power:"200",
+            earning:"0.20",
+            
+          },
+          { price:"128.01$TRX",
+            plan:"BRONZE PLAN",
+            power:"100",
+            earning:"0.10",
+            
+          }
+        ]
+      ;
+
+
+        // Save additional user data to Firestore
+        return db.collection('users').doc(user.uid).set({
           username: username,
           address: address,
           email: email,
           balance: 0.5,
           referrals:0,
-          plans:[]
-      };
-
-
-        // Save additional user data to Firestore
-        return db.collection('users').doc(user.uid).set({
         plan:userMap,
         }, { merge: true });
       })

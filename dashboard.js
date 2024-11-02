@@ -6,10 +6,75 @@ function minerIncrementor() {
       counter.textContent = (parseFloat(counter.textContent) + 0.005).toFixed(6);
   }, 1000);
 }
+
+
+
+
+function readPlan(data){
+
+  const planContainer = document.getElementById('planContainer');
   
+  data.forEach((user, index) => {
+    const htmlElement = `
+    <div class="boxMargin">
+      <div class="cs_iconbox cs_style_1 cs_radius_20 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
+        <div class="cs_iconbox_inner">
+          <div class="cs_iconbox_header">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <img src="package.png" height="30px" width="30px" alt="Icon">
+              <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">PLAN NAME:</P>
+            </div>
+            <P id="planID" style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">${user.plan}</P>
+          </div>
   
+          <div class="cs_iconbox_header">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <img src="energy.png" height="30px" width="30px" alt="Icon">
+              <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">POWER:</P>
+            </div>
+            <P id="powerID" style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">${user.power}</P>
+          </div>
   
+          <div class="cs_iconbox_header">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <img src="coin.png" height="30px" width="30px" alt="Icon">
+              <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">EARNING RATE:</P>
+            </div>
+            <P id="earningID" style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">${user.earning}</P>
+          </div>
   
+          <div class="cs_iconbox_header">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <img src="signal.png" height="30px" width="30px" alt="Icon">
+              <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">STATUS:</P>
+            </div>
+            <P style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">ACTIVE🟢</P>
+          </div>
+  
+          <div class="cs_iconbox_header">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <img src="coin.png" height="30px" width="30px" alt="Icon">
+              <P style="margin: 16px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">PRICE:</P>
+            </div>
+            <P id="priceID" style="margin: 12px; font-size: 12px;color: rgba(222, 181, 250, 0.812);">${user.price} $trx</P>
+          </div>
+  
+        
+        </div>
+      </div>
+      </div>
+    `;
+  
+    planContainer.innerHTML += htmlElement;
+  });
+}
+
+
+
+
+
+
+
   // Function to read user data from Firestore
   function readUserData() {
 var username = document.getElementById("username");
@@ -32,7 +97,7 @@ username.innerHTML = data.username;
 address.innerHTML = data.address;
 balance.innerHTML = data.balance;
 referrals.innerHTML = data.referrals;
-
+readPlan(data.plan);
           } else {
             console.log("No such document!");
           }
