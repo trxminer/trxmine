@@ -95,7 +95,7 @@ console.log("i got here");
 
             setTimeout(function() {
                 window.location.href = "dashboard.html";
-            }, 3000);
+            }, 1000);
             
         } catch (error) {
             console.error('Payment confirmation error:', error);

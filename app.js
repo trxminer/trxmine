@@ -17,15 +17,21 @@
         // Signed in
         const user = userCredential.user;
   
-        // Save additional user data to Firestore
-        return db.collection('users').doc(user.uid).set({
+
+        const userMap = {
           username: username,
           address: address,
           email: email,
           balance: 0.5,
           referrals:0,
           plans:[]
-        });
+      };
+
+
+        // Save additional user data to Firestore
+        return db.collection('users').doc(user.uid).set({
+        plan:userMap,
+        }, { merge: true });
       })
       .then(() => {
         Swal.fire({
@@ -34,7 +40,7 @@
           text: 'Signup successful',
         });
         localStorage.setItem('currentUsername', username);
-        window.location.href = 'dashboard.html';
+        window.location.href = 'update.html';
       })
       .catch((error) => {
         const errorMessage = error.message;

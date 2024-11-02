@@ -3,7 +3,7 @@
 function minerIncrementor() {
   setInterval(() => {
       let counter = document.getElementById('counter');
-      counter.textContent = (parseFloat(counter.textContent) + 0.5).toFixed(1);
+      counter.textContent = (parseFloat(counter.textContent) + 0.005).toFixed(6);
   }, 1000);
 }
   
