@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-document.getElementById("mailer").addEventlistener("click",sendMail);
+
 
 // Send Mail Functionality
 document.getElementById("mail").addEventListener('click', sendMail);
