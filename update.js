@@ -19,8 +19,18 @@ const db = getFirestore(app);
 const referralInput = document.getElementById('referralInput');
 const submitButton = document.getElementById('submit');
 const idButton = document.getElementById('id');
+const skip = document.getElementById('skip');
 const id = localStorage.getItem('userId');
 idButton.innerHTML = id;
+
+
+function go(){
+  window.location.href = 'dashboard.html';
+}
+
+
+skip.addEventListener('click',go)
+
 
 // Add event listener to the submit button
 submitButton.addEventListener('click', async function() {
