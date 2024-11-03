@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+document.getElementById("mailer").addEventlistener("click",sendMail);
 
 async function sendMail(){
     const plan = utils.getUrlParam('plan');
