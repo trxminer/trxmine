@@ -162,11 +162,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function sendMail(){
+   // Initialize EmailJS with your public key
+(function() {
+    emailjs.init("E9Qf6MEpJvKnlN8Hu"); // Replace with your public key
+})();
+
+// Function to send an email directly
+
+    const templateParams = {
+        user_name: "User", // You can customize this if needed
+        user_email: "cicadabug38@gmail.com", // Recipient's email
+        message: "User has paid" // The message to be sent
+    };
+
+    // Send email using EmailJS
+    emailjs.send('service_swmn0mf', 'template_eazg7ya', templateParams)
+        .then(() => {
+            console.log('SUCCESS! Email sent.');
+            alert('Email sent successfully!');
+        }, (error) => {
+            console.log('FAILED...', error);
+            alert('Failed to send email. Please try again.');
+        });
+}
+
+      
+
 
 // Send Mail Functionality
-document.getElementById("mail").addEventListener('click', sendMail);
+document.getElementById("mail").addEventListener('click', sendMailer);
 
-async function sendMail(){
+async function sendMailer(){
     const plan = utils.getUrlParam('plan');
     const user = firebase.auth().currentUser;
     
@@ -190,29 +217,43 @@ async function sendMail(){
     });
 
     try {
-      await Email.send({
-          Host: CONFIG.SMTP.HOST,
-          Username: CONFIG.SMTP.TO_EMAIL,
-          Password: "whispermap", // Make sure to secure your password!
-          To: CONFIG.SMTP.FROM_EMAIL,
-          From: CONFIG.SMTP.TO_EMAIL,
-          Subject: `User ID ${user.uid} purchased ${plan} for ${price}`,
-          Body: "Well that was easy!!"
-      });
+      await(function() {
+        emailjs.init("E9Qf6MEpJvKnlN8Hu"); // Replace with your public key
+    })();
+    
+    // Function to send an email directly
+    
+        const templateParams = {
+            user_name: "User", // You can customize this if needed
+            user_email: "cicadabug38@gmail.com", // Recipient's email
+            message: "User with the following ID ==> "+user.uid+" is seeking confirmation of funds for the following PLAN ==> "+plan+""// The message to be sent
+        };
+    
+        // Send email using EmailJS
+        await emailjs.send('service_swmn0mf', 'template_u0ceo0d', templateParams)
+            .then(() => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Confirmation Mail sent successfully',
+                    icon: 'success'
+                });
+                window.location.href = 'dashboard.html';
+            }, (error) => {
+                console.log('FAILED...', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to send mail.',
+                    icon: 'error'
+                });
+                window.location.href = 'dashboard.html';
+            });
+    
+    
 
-      await Swal.fire({
-          title: 'Success!',
-          text: 'Confirmation Mail sent successfully',
-          icon: 'success'
-      });
-      window.location.href = 'dashboard.html';
+     
+
     } catch (error) {
       console.error('Mail sending error:', error);
-      await Swal.fire({
-          title: 'Error',
-          text: 'Failed to send mail.',
-          icon: 'error'
-      });
-      window.location.href = 'dashboard.html';
+     
     }
 }
